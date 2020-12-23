@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8' />
+    <title>Concatenate Map</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+
+    <!-- Add the `mapbox-gl-js` library to the page. This gives our JS code below access to the `mapboxgl` object -->
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.js'></script>
+
+    <!-- Add some default styling for the map container & controls -->
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.css' rel='stylesheet' />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+      }
+    </style>
+
+  </head>
+  <body>
+
+    <!-- Add a #map element to the page, to serve as the map's container -->
+    <div id='map'></div>
+
+    <script>
+	
+
+    // Set an access token to allow the browser to load the map from our account
+    // TODO replace this with YOUR access token!!!!!!!
+    mapboxgl.accessToken = 'pk.eyJ1IjoiaGFycnltYWhhciIsImEiOiJuQU1iLU5FIn0.zC5TBxlL49i0qeZwWjEJjw';
+
+    // Memunculkan Peta
+    const map = new mapboxgl.Map({
+      style: 'mapbox://styles/harrymahar/ckj0w4yoj91mp1al2ynd02vai', //TODO replace this with YOUR style URL! This tells the map which style to use
+      container: 'map', // id of the container div we created above
+      center: [120.192,-3.001], // the location to display when the map first loads
+      zoom: 15.0, // the zoom level to display when the map first loads
+	  pitch: 39,
+	  bearing: 00
+    });
+	
+	// The 'building' layer in the mapbox-streets vector source contains building-height
+// data from OpenStreetMap.
+	map.on('load', function () {
+// Insert the layer beneath any symbol layer.
+	var layers = map.getStyle().layers;
+ 
+	var labelLayerId;
+		for (var i = 0; i < layers.length; i++) {
+			if (layers[i].type === 'symbol' && layers[i].layout['text-field']) {
+			labelLayerId = layers[i].id;
+			break;
+				}
+			}
+ 
+		map.addLayer(
+		{
+		'id': '3d-buildings',
+		'source': 'composite',
+		'source-layer': 'building',
+		'filter': ['==', 'extrude', 'true'],
+		'type': 'fill-extrusion',
+		'minzoom': 16,
+		'paint': {
+		'fill-extrusion-color': '#aaa',
+ 
+// use an 'interpolate' expression to add a smooth transition effect to the
+// buildings as the user zooms in
+		'fill-extrusion-height': [
+		'interpolate',
+		['linear'],
+		['zoom'],
+		15,
+		0,
+		15.05,
+		['get', 'height']
+		],
+		'fill-extrusion-base': [
+		'interpolate',
+		['linear'],
+		['zoom'],
+		15,
+		0,
+		15.05,
+		['get', 'min_height']
+		],
+		'fill-extrusion-opacity': 0.6
+		}
+		},
+		labelLayerId
+		);
+	});
+	
+    // Kotak Pencarian dan Kontrol Navigasi Peta
+
+
+    </script>
+	
+	<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js"></script>
+	<link
+		rel="stylesheet"
+		href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.css"
+		type="text/css"
+	/>
+	<!-- Promise polyfill script required to use Mapbox GL Geocoder in IE 11 -->
+	<script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
+
+ 
+	<script>
+	
+	map.addControl(
+	new MapboxGeocoder({
+	accessToken: mapboxgl.accessToken,
+	mapboxgl: mapboxgl
+	})
+	);
+	
+	map.addControl(new mapboxgl.NavigationControl());
+	</script>
+	
+	
+	
+	
+	
+	
+  </body>
+</html>
