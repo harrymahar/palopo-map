@@ -121,7 +121,8 @@
 	new MapboxGeocoder({
 	accessToken: mapboxgl.accessToken,
 	mapboxgl: mapboxgl
-	})
+	}),
+	'top-right'
 	);
 	
 	map.addControl(new mapboxgl.NavigationControl());
@@ -138,6 +139,7 @@
 	/>
 	
 	<script>
+	
 	map.addControl(
 	new MapboxDirections({
 	accessToken: mapboxgl.accessToken
